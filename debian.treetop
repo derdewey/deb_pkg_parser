@@ -3,104 +3,26 @@
 # entries.
 grammar Debian
   #Tag ordering is not enforced. Ugh!
-  rule package_description
-    # Two times slower than using the tags_with_single_line_value matcher... but smaller grammar!
-    ((description_tag description_lines) / (generic_tag single_line))+
+  rule package
+    ((description_tag description_lines) / (generic_tag single_line))+ <DebianSyntaxNode::Package>
   end
 
-  rule tags_with_single_line_value
-    package_tag / priority_tag / section_tag / installed_size_tag / maintainer_tag / original_maintainer_tag /
-    architecture_tag / source_tag / version_tag / suggests_tag / replaces_tag / depends_tag / conflicts_tag /
-    filename_tag / size_tag / md5sum_tag / sha1_tag / sha256_tag / homepage_tag / bugs_tag / origin_tag /
-    supported_tag / task_tag
-  end
-
-  # BIG OLE LIST OF TAGS
+  # TAGS
   rule generic_tag
-    tag:(!":" .)+ ": "
-  end
-  rule package_tag
-    "Package: "
-  end
-  rule priority_tag
-    "Priority: "
-  end
-  rule section_tag
-    "Section: "
-  end
-  rule installed_size_tag
-    "Installed-Size: "
-  end
-  rule maintainer_tag
-    "Maintainer: "
-  end
-  rule original_maintainer_tag
-    "Original-Maintainer: "
-  end
-  rule architecture_tag
-    "Architecture: "
-  end
-  rule source_tag
-    "Source: "
-  end
-  rule replaces_tag
-    "Replaces: "
-  end
-  rule version_tag
-    "Version: "
-  end
-  rule suggests_tag
-    "Suggests: "
-  end
-  rule depends_tag
-    "Depends: "
-  end
-  rule conflicts_tag
-    "Conflicts: "
-  end
-  rule filename_tag
-    "Filename: "
-  end
-  rule size_tag
-    "Size: "
-  end
-  rule md5sum_tag
-    "MD5sum: "
-  end
-  rule sha1_tag
-    "SHA1: "
-  end
-  rule sha256_tag
-    "SHA256: "
+    tag:(!":" .)+ ": " <DebianSyntaxNode::Tag>
   end
   rule description_tag
-    "Description: "
-  end
-  rule homepage_tag
-    "Homepage: "
-  end
-  rule bugs_tag
-    "Bugs: "
-  end
-  rule origin_tag
-    "Origin: "
-  end
-  rule supported_tag
-    "Supported: "
-  end
-  rule task_tag
-    "Task: "
+    tag:"Description" ": " <DebianSyntaxNode::Tag>
   end
 
   ##### VALUE MATCHING
-
   rule single_line
-    (!"\n" .)+ "\n"
+    value:(!"\n" .)+ "\n" <DebianSyntaxNode::Value>
   end
   rule description_lines
-    (!homepage_tag .)+ &homepage_tag
+    value:(!"Homepage: " .)+ &"Homepage: " <DebianSyntaxNode::Value>
   end
   rule dependency_line
-    (!"\n" .)+
+    (!"\n" .)+ <DebianSyntaxNode::Value>
   end
 end

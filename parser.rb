@@ -25,11 +25,11 @@ Zlib::GzipReader.open("Packages.test.gz") do |unzipped|
     raw_list.each do |raw_entry|
       # puts "Parsing entry's size: #{raw_entry.length}"
       parsed_entry = parser.parse(raw_entry)
-      #package_list <<
+      parsed_entry.resolve
+      package_list << parsed_entry
       raise(RuntimeError, "===== Could not parse entry ====\n#{raw_entry}") if(parsed_entry.nil?)
     end
 end
-pp package_list
 exit(1)
 
 package_paths = Find.find("/home/xavierlange/code/defenderOS/dists").select{|x| x =~ /Packages\.gz/}
