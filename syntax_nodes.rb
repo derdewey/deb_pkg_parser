@@ -1,5 +1,13 @@
 module DebianSyntaxNode
   class PackageList < Treetop::Runtime::SyntaxNode
+    def initialize(*args)
+      super(*args)
+      puts "PackageList is ready to go!"
+      resolve
+    end
+    def resolve
+      pp "Hi"
+    end
   end
 
   class Package < Treetop::Runtime::SyntaxNode
@@ -7,27 +15,31 @@ module DebianSyntaxNode
     def initialize(*args)
       super(*args)
       @values = {}
-      puts "#{elements[0].elements[0].text_value.inspect} AND #{elements[1].elements[0].text_value.inspect}"
       resolve
     end
+
+    # Traverse the elements tree and start putting entries into the @values hash
+    # TODO: Either fix the parser so that ValueLine is all the data at once or
+    # come up with a less flakey way fo combining adjacent ValueLine's into their
+    # TagValue entry.
     def resolve
-      elements.inject([]) do |cont,ele|
+      tracker = nil
+      elements.inject(@values) do |container,ele|
         if ele.kind_of?(Tag)
-          cont.push({:tag => ele.elements.first.text_value, :value => ""})
+          tracker = ele.elements.first.text_value
+          container.merge!({tracker => ""})
         elsif ele.kind_of?(Value)
           ele.elements.each do |value|
             if value.kind_of?(ValueLine)
-              cont.last[:value] += value.text_value
+              container[tracker] += value.text_value
             end
           end
-          pp cont.last
         else
-          raise RuntimeError, "unknown class!"
+          raise RuntimeError, "unknown class my code is goofy!"
         end
-
-        cont
+        container
       end
-      exit(1)
+      @values
     end
   end
 

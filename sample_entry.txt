@@ -1,29 +1,43 @@
-Package: acct
-Priority: optional
+Package: adduser
+Priority: required
 Section: admin
-Installed-Size: 352
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Original-Maintainer: Mathieu Trudel <mathieu.tl@gmail.com>
-Architecture: i386
-Version: 6.5.4-2ubuntu1
-Depends: dpkg (>= 1.15.4) | install-info, libc6 (>= 2.4)
-Filename: pool/main/a/acct/acct_6.5.4-2ubuntu1_i386.deb
-Size: 111226
-MD5sum: 10cba1458ace8c31169c0e9e915c9a0f
-SHA1: 6c2dcdc480144a9922329cd4fa22c7d1cb83fcbb
-SHA256: bf8d8bb8eef3939786a1cefc39f94079f43464b71099f4a59b61b24cafdbc010
-Description: The GNU Accounting utilities for process and login accounting
- GNU Accounting Utilities is a set of utilities which reports and summarizes
- data about user connect times and process execution statistics.
+Installed-Size: 884
+Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Debian Adduser Developers <adduser-devel@lists.alioth.debian.org>
+Architecture: all
+Version: 3.112ubuntu1
+Replaces: manpages-it (<< 0.3.4-2), manpages-pl (<= 20051117-1)
+Depends: perl-base (>= 5.6.0), passwd (>= 1:4.0.12), debconf | debconf-2.0
+Suggests: liblocale-gettext-perl, perl-modules, ecryptfs-utils (>= 67-1)
+Filename: pool/main/a/adduser/adduser_3.112ubuntu1_all.deb
+Size: 119632
+MD5sum: 8527d20c0b6f3113b8ed5f40ecc6fd6e
+SHA1: 2e45da8247b58801600b22df139864f7a4167574
+SHA256: 44f14badacd571efe6b18a4d1adb2098593638d614e837a6ff6a7f9b3ad58e9d
+Description: add and remove users and groups
+ This package includes the 'adduser' and 'deluser' commands for creating
+ and removing users.
  .
- "Login accounting" provides summaries of system resource usage based on connect
- time, and "process accounting" provides summaries based on the commands
- executed on the system.
+  - 'adduser' creates new users and groups and adds existing users to
+    existing groups;
+  - 'deluser' removes users and groups and removes users from a given
+    group.
  .
- The 'last' command is provided by the sysvinit package and not included here.
-Homepage: http://www.gnu.org/software/acct/
+ Adding users with 'adduser' is much easier than adding them manually.
+ Adduser will choose appropriate UID and GID values, create a home
+ directory, copy skeletal user configuration, and automate setting
+ initial values for the user's password, real name and so on.
+ .
+ Deluser can back up and remove users' home directories
+ and mail spool or all the files they own on the system.
+ .
+ A custom script can be executed after each of the commands.
+ .
+  Development mailing list:
+    http://lists.alioth.debian.org/mailman/listinfo/adduser-devel/
+Homepage: http://alioth.debian.org/projects/adduser/
 Bugs: https://bugs.launchpad.net/ubuntu/+filebug
 Origin: Ubuntu
 Supported: 18m
-
+Task: minimal
 
