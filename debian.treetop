@@ -1,0 +1,53 @@
+grammar Debian
+  rule package_list
+    (package "\n"?)+ <DebianSyntaxNode::PackageList>
+  end
+  rule package
+    (tag / value)+ <DebianSyntaxNode::Package>
+  end
+
+  rule tag
+    tag_value tag_stop <DebianSyntaxNode::Tag>
+  end
+  rule tag_value
+    [\w\-]+ <DebianSyntaxNode::TagValue>
+  end
+  rule tag_stop
+    ": " <DebianSyntaxNode::TagStop>
+  end
+
+  rule value
+    value_line value_stop <DebianSyntaxNode::Value>
+  end
+  rule value_line
+    (!"\n" .)+ <DebianSyntaxNode::ValueLine>
+    # ([\w \. " , \- ' : / < > @ ( ) = | \[ \] + ; ~ í á * % `])+ <DebianSyntaxNode::ValueLine>
+  end
+  rule value_stop
+    "\n"? <DebianSyntaxNode::ValueStop>
+  end
+end
+
+
+
+  # I should post to the mailing list about why this didn't work.
+  #rule entry_value
+  #  ([\w \n\.",\-'":])+
+  #end
+  #rule entry
+  #  entry_value entry_stop
+  #end
+  #rule entry_stop
+  #  "\n" &tag
+  #end
+
+  #rule tag
+  #  "\n"? tag_value tag_stop
+  #end
+  #rule tag_value
+  #  ([\w\-])+
+  #end
+  #rule tag_stop
+  #  ": "
+  #end
+

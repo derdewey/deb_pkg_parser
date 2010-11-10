@@ -1,0 +1,29 @@
+Package: acct
+Priority: optional
+Section: admin
+Installed-Size: 352
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Mathieu Trudel <mathieu.tl@gmail.com>
+Architecture: i386
+Version: 6.5.4-2ubuntu1
+Depends: dpkg (>= 1.15.4) | install-info, libc6 (>= 2.4)
+Filename: pool/main/a/acct/acct_6.5.4-2ubuntu1_i386.deb
+Size: 111226
+MD5sum: 10cba1458ace8c31169c0e9e915c9a0f
+SHA1: 6c2dcdc480144a9922329cd4fa22c7d1cb83fcbb
+SHA256: bf8d8bb8eef3939786a1cefc39f94079f43464b71099f4a59b61b24cafdbc010
+Description: The GNU Accounting utilities for process and login accounting
+ GNU Accounting Utilities is a set of utilities which reports and summarizes
+ data about user connect times and process execution statistics.
+ .
+ "Login accounting" provides summaries of system resource usage based on connect
+ time, and "process accounting" provides summaries based on the commands
+ executed on the system.
+ .
+ The 'last' command is provided by the sysvinit package and not included here.
+Homepage: http://www.gnu.org/software/acct/
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Origin: Ubuntu
+Supported: 18m
+
+
