@@ -1,10 +1,19 @@
-My first attempt at a treetop grammar. Not a real project just yet, but it gives you the grammar and a starting point for getting the code up and running.
+A DEBIAN PACKAGES.GZ GRAMMER
 
-Offered with no license, but that Packages.test.gz probably has one. So we'll go with whatever Debian is using for that.
+My first attempt at a treetop grammar. Not a real project just yet, but it gives you the grammar and a starting point for getting the code up and running. The grammar is more succinct now that I have learned some PEG idioms for end-of-match semantics.
 
 Usage instructions:
 
 bundle install gems
 bundle exec ./parser.rb
 
+Other useful places to look for references:
+http://treetop.rubyforge.org/syntactic_recognition.html
+http://treetop.rubyforge.org/pitfalls_and_advanced_techniques.html
+http://groups.google.com/group/treetop-dev
+https://github.com/aarongough/koi-reference-parser/
+http://learnruby.com/examples/ruby-quiz-155.shtml
+
 That should start the slow trudge through the file and allow you to see if it is working properly.
+
+Offered with no license, but that Packages.test.gz included here probably has one. So we'll go with whatever Debian is using for that.

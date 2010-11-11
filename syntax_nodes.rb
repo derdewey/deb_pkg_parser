@@ -4,6 +4,7 @@ module DebianSyntaxNode
     def initialize(*args)
       super(*args)
       @values = {}
+      resolve
     end
 
     # Traverse the elements tree and start putting entries into the @values hash
@@ -15,8 +16,11 @@ module DebianSyntaxNode
         container.merge!(ele.elements[0].text_value.strip.gsub(":","") => ele.elements[1].text_value.strip)
         container
       end
-      puts @values
+      raise RuntimeError, "No package name found for\n#{text_value}" if @values["Package"].nil?
       @values
+    end
+    def name
+      @values["Package"]
     end
   end
 
@@ -30,5 +34,19 @@ module DebianSyntaxNode
     def initialize(*args)
       super(*args)
     end
+  end
+  class SourceList < Treetop::Runtime::SyntaxNode
+    def initialize(*args)
+      super(*args)
+    end
+  end
+  class SourceListUrl < Treetop::Runtime::SyntaxNode
+    def initialize(*args)
+      super(*args)
+    end
+    def resolve
+      text_value.gsub!(" ","/").chomp!
+    end
+    
   end
 end

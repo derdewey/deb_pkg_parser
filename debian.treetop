@@ -1,8 +1,5 @@
-# TODO: Multi-line values lose their \n because they are consumed by value_stop. This
-# is good behavior for single-line entries (the majority), but is a problem with Description
-# entries.
 grammar Debian
-  #Tag ordering is not enforced. Ugh!
+  # Debian package entries do fit any concrete schema, tags can be in almost any order.
   rule package
     ((description_tag description_lines) / (generic_tag single_line))+ <DebianSyntaxNode::Package>
   end
@@ -19,6 +16,7 @@ grammar Debian
   rule single_line
     value:(!"\n" .)+ "\n" <DebianSyntaxNode::Value>
   end
+  #TODO: All my packages seem to have Description then Homepage. Homepage may need to be generalized to generic_tag!
   rule description_lines
     value:(!"Homepage: " .)+ &"Homepage: " <DebianSyntaxNode::Value>
   end
