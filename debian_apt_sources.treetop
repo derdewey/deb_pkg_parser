@@ -3,10 +3,10 @@ grammar DebianAptSources
     (repository_line / comment / spaces)+
   end
   rule repository_line
-    ("deb " / "deb-src ") url  "\n"? <DebianSyntaxNode::SourceListUrl>
+    ("deb " / "deb-src ") url  "\n"?
   end
   rule url
-    "http://" (!"\n" .)+
+    "http://" (!"\n" .)+  <DebianSyntaxNode::SourceListUrl>
   end
   rule comment
     "#" (!"\n" .)+ "\n"

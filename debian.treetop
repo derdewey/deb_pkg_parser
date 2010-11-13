@@ -1,5 +1,9 @@
 grammar Debian
   # Debian package entries do fit any concrete schema, tags can be in almost any order.
+  rule test
+    #("Depends: ") (dependency ", "?)+
+    dependency_line
+  end
   rule package
     ((description_tag description_lines) / (generic_tag single_line))+ <DebianSyntaxNode::Package>
   end
@@ -21,6 +25,26 @@ grammar Debian
     value:(!"Homepage: " .)+ &"Homepage: " <DebianSyntaxNode::Value>
   end
   rule dependency_line
-    (!"\n" .)+ <DebianSyntaxNode::Value>
+    "Depends: " (!"\n" dependency ", "?)+ "\n"? <DebianSyntaxNode::DependencyList>
+  end
+
+  rule dependency
+    substitutable_dependency / comparative_dependency
+  end
+  rule substitutable_dependency
+    package_name (" | " package_name)+ <DebianSyntaxNode::SubstitutableDependency>
+  end
+  rule comparative_dependency
+    package_name " " ("(" dependency_comparator dependency_version ")")? <DebianSyntaxNode::ComparativeDependency>
+  end
+
+  rule dependency_comparator
+    (!" " .)+ " " <DebianSyntaxNode::DependencyComparator>
+  end
+  rule dependency_version
+    (!")" .)+ &")" <DebianSyntaxNode::DependencyVersion>
+  end
+  rule package_name
+    (![ \)\n] .)+ <DebianSyntaxNode::PackageName>
   end
 end
