@@ -1,3 +1,8 @@
+require 'treetop'
+require 'tempfile'
+require 'net/http'
+require 'uri'
+
 module ElementTraversalMixin
   def each_element(parent=self,&block)
     begin
@@ -25,6 +30,7 @@ module DebianSyntaxNode
     def initialize(*args)
       super(*args)
       @values = {}
+      @source = nil
       resolve
     end
 
@@ -42,6 +48,9 @@ module DebianSyntaxNode
     end
     def name
       @values["Package"]
+    end
+    def dependencies
+      @values["Depends"]
     end
   end
 
@@ -116,16 +125,85 @@ module DebianSyntaxNode
     end
   end
   class SourceList < Treetop::Runtime::SyntaxNode
+    include ElementTraversalMixin
+    attr_accessor :list, :urls
     def initialize(*args)
       super(*args)
+      @list = []
+      each_element do |ele|
+        if(ele.kind_of?(SourceListRepository))
+          @list << ele
+        end
+      end
+      @urls = @list.collect{|x| x.package_urls}.flatten!
+      processed_packages = []
+      @urls.inject(processed_packages) do |list,addr|
+        pp "Going for #{addr}"
+        url = URI.parse(addr)
+        pp url
+        Tempfile.open('packages.gz') do |f|
+          f.binmode
+          f.write Net::HTTP.get(url)
+          pl = PackageList.new
+          PackageList.from_gzip(f.path,pl)
+          pl.source = addr
+          @list << pl
+          print '.'
+        end
+      end
+    end
+  end
+  class SourceListRepository < Treetop::Runtime::SyntaxNode
+    include ElementTraversalMixin
+    attr_accessor :url, :distro, :components
+    def initialize(*args)
+      super(*args)
+      each_element do |ele|
+        if(ele.kind_of?(SourceListUrl))
+          @url = ele.text_value.strip!
+          @url.gsub!(/\/$/,'')
+          @url.chomp!
+        elsif(ele.kind_of?(SourceListDistro))
+          @distro = ele.text_value.strip!
+        elsif(ele.kind_of?(SourceListComponent))
+          @components = ele.text_value
+          @components = @components.split(" ")
+        end
+      end
+    end
+    def package_urls
+      @components.collect{|x| %Q{#{@url}/dists/#{@distro}/#{x}/binary-i386/Packages.gz}}
+    end
+  end
+  class SourceListSpec < Treetop::Runtime::SyntaxNode
+    include ElementTraversalMixin
+    def initialize(*args)
+      super(*args)
+#      pp "Spec! #{text_value}"
     end
   end
   class SourceListUrl < Treetop::Runtime::SyntaxNode
+    include ElementTraversalMixin
     def initialize(*args)
       super(*args)
+#      pp "Url #{text_value}"
     end
     def resolve
       text_value.gsub!(" ","/").chomp!
+    end
+  end
+  class SourceListDistro < Treetop::Runtime::SyntaxNode
+    include ElementTraversalMixin
+    def initialize(*args)
+      super(*args)
+#      pp "Distro! #{text_value}"
+    end
+  end
+  class SourceListComponent < Treetop::Runtime::SyntaxNode
+    include ElementTraversalMixin
+    def initialize(*args)
+      super(*args)
+#      pp "Component! #{text_value}"
     end
   end
 end

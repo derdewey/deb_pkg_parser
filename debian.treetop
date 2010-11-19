@@ -1,19 +1,15 @@
 grammar Debian
   # Debian package entries do fit any concrete schema, tags can be in almost any order.
-  rule test
-    #("Depends: ") (dependency ", "?)+
-    dependency_line
-  end
   rule package
     ((description_tag description_lines) / (generic_tag single_line))+ <DebianSyntaxNode::Package>
   end
 
   # TAGS
   rule generic_tag
-    tag:(!":" .)+ ": " <DebianSyntaxNode::Tag>
+    (!": " .)+ ": " <DebianSyntaxNode::Tag>
   end
   rule description_tag
-    tag:"Description" ": " <DebianSyntaxNode::Tag>
+    "Description" ": " <DebianSyntaxNode::Tag>
   end
 
   ##### VALUE MATCHING
@@ -22,7 +18,7 @@ grammar Debian
   end
   #TODO: All my packages seem to have Description then Homepage. Homepage may need to be generalized to generic_tag!
   rule description_lines
-    value:(!"Homepage: " .)+ &"Homepage: " <DebianSyntaxNode::Value>
+    value:(!generic_tag .)+ &generic_tag <DebianSyntaxNode::Value>
   end
   rule dependency_line
     "Depends: " (!"\n" dependency ", "?)+ "\n"? <DebianSyntaxNode::DependencyList>

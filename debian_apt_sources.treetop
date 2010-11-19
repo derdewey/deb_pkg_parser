@@ -1,12 +1,21 @@
 grammar DebianAptSources
   rule list
-    (repository_line / comment / spaces)+
+    (spaces / comment / repository_line)+ <DebianSyntaxNode::SourceList>
   end
   rule repository_line
-    ("deb " / "deb-src ") url  "\n"?
+    ("deb " / "deb-src ") url spec "\n"? <DebianSyntaxNode::SourceListRepository>
   end
   rule url
-    "http://" (!"\n" .)+  <DebianSyntaxNode::SourceListUrl>
+    &"http" (!(" ") .)+ " "  <DebianSyntaxNode::SourceListUrl>
+  end
+  rule spec
+    distro (component " "?)+ <DebianSyntaxNode::SourceListSpec>
+  end
+  rule distro
+    (!" " .)+ " " <DebianSyntaxNode::SourceListDistro>
+  end
+  rule component
+    (!"\n" .)+ !(!"\n" .) <DebianSyntaxNode::SourceListComponent>
   end
   rule comment
     "#" (!"\n" .)+ "\n"
